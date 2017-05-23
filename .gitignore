@@ -1,5 +1,7 @@
 **/db.sqlite3
 
+media/
+
 # ---> Python
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -15,7 +17,6 @@ env/
 build/
 develop-eggs/
 dist/
-downloads/
 eggs/
 .eggs/
 lib/
