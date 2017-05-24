@@ -1,0 +1,8 @@
+{% extends 'downloads/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<h1>{{ file.title }}</h1>
+{{ file }}<br>
+{{ mime }}
+{% endblock content %}

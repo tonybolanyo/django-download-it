@@ -8,5 +8,6 @@ app_name = 'downloads'
 
 urlpatterns = [
     url(r'^$', DownloadListView.as_view(), name='index'),
+    url(r'^(?P<pk>\d+)/$', DownloadDetailView.as_view(), name='detail'),
     url(r'^download/(?P<pk>\d+)/$', FileDownloadView.as_view(), name='download'),
 ]

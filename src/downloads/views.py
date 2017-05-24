@@ -3,7 +3,7 @@ import magic
 
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import ListView, View
+from django.views.generic import DetailView, ListView, View
 from django.views.generic.detail import SingleObjectMixin
 
 from .models import Download
@@ -31,3 +31,14 @@ class FileDownloadView(SingleObjectMixin, View):
         response = HttpResponse(obj.file, content_type=mime)
         response['Content-Disposition'] = 'attachment; filename="%s"' % obj.file.name
         return response
+
+class DownloadDetailView(DetailView):
+
+    model = Download
+    context_object_name = 'file'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        obj = self.get_object()
+        context['mime'] = magic.from_file(obj.file.path, mime=True)
+        return context
