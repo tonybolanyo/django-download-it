@@ -6,10 +6,10 @@ import pytest
 
 from ..models import Download
 
-pytestmark = pytest.mark.django_db
+# pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.django_db
+# @pytest.mark.django_db
 class TestDownload(TestCase):
 
     def test_model(self):

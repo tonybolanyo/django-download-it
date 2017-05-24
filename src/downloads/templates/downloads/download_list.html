@@ -24,7 +24,7 @@
             <p class="card-text text-right"><small class="text-muted">{% blocktrans with times=dwl.downloads %}Downloaded {{times}} times{% endblocktrans %}</small></p>
         </div>
         <div class="card-footer">
-            <a href="#" class="btn btn-primary">{% trans 'Download' %}</a>
+            <a href="{% url 'downloads:download' pk=dwl.pk %}" class="btn btn-primary">{% trans 'Download' %}</a>
         </div>
     </div>
 </div>
