@@ -24,9 +24,10 @@ class FileDownloadView(SingleObjectMixin, View):
 
     def get(self, request, *args, **kwargs):
         obj = self.get_object()
-        logger.debug(obj.file)
+        logger.debug('Downloading %s' % obj.file)
+        obj.downloads = obj.downloads + 1
+        obj.save()
         mime = magic.from_file(obj.file.path, mime=True)
-        print(mime)
         response = HttpResponse(obj.file, content_type=mime)
         response['Content-Disposition'] = 'attachment; filename="%s"' % obj.file.name
         return response
