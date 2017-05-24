@@ -6,6 +6,9 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import StatusModel, TimeStampedModel
 
+from .fields import ContentTypeRestrictedFileField
+from .utils import FileSize
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,10 +24,17 @@ class Download(StatusModel, TimeStampedModel):
     slug = models.SlugField(_('slug'), unique=True)
     summary = models.TextField(_('summary'), blank=True)
     description = models.TextField(_('description'), blank=True)
-    file = models.FileField(_('file'), upload_to='downloads')
+    file = ContentTypeRestrictedFileField(
+        _('file'),
+        upload_to='downloads',
+        content_types=['application/pdf', 'application/zip'],
+        max_upload_size=FileSize('5MB').get_bytes(),
+        help_text=_('Only PDF and ZIP files.')
+    )
     thumbnail = models.ImageField(_('thumbnail'), upload_to='downloads')
     downloads = models.IntegerField(_('download counter'), default=0)
-    registered_only = models.BooleanField(_('only for registered users'), default=True)
+    registered_only = models.BooleanField(
+        _('only for registered users'), default=True)
 
     class Meta:
         verbose_name = _('download')
