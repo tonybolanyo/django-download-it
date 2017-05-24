@@ -5,7 +5,6 @@ from mixer.backend.django import mixer
 import pytest
 
 from ..models import Download
-from ..fields import ContentTypeRestrictedFileField
 
 pytestmark = pytest.mark.django_db
 
