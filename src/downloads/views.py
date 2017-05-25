@@ -1,6 +1,8 @@
 import logging
 import magic
+import sys
 
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView, View
@@ -27,10 +29,15 @@ class FileDownloadView(SingleObjectMixin, View):
         logger.debug('Downloading %s' % obj.file)
         obj.downloads = obj.downloads + 1
         obj.save()
-        mime = magic.from_file(obj.file.path, mime=True)
+        if sys.platform in ('win32', 'cygwin'):
+            file_magic = magic.Magic(mime=True, magic_file=settings.MAGIC_FILE)
+        else:
+            file_magic = magic.Magic(mime=True)
+        mime = file_magic.from_file(obj.file.path)
         response = HttpResponse(obj.file, content_type=mime)
         response['Content-Disposition'] = 'attachment; filename="%s"' % obj.file.name
         return response
+
 
 class DownloadDetailView(DetailView):
 
@@ -40,5 +47,9 @@ class DownloadDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         obj = self.get_object()
-        context['mime'] = magic.from_file(obj.file.path, mime=True)
+        if sys.platform in ('win32', 'cygwin'):
+            file_magic = magic.Magic(mime=True, magic_file=settings.MAGIC_FILE)
+        else:
+            file_magic = magic.Magic(mime=True)
+        context['mime'] = file_magic.from_file(obj.file.path)
         return context

@@ -2,6 +2,9 @@
 See https://github.com/kaleidos/django-validated-file for original file
 """
 
+import sys
+
+from django.conf import settings
 from django.db import models
 from django import forms
 from django.template.defaultfilters import filesizeformat
@@ -11,6 +14,7 @@ import magic
 
 
 class ValidatedFileField(models.FileField):
+
     def __init__(self, *args, **kwargs):
         self.content_types = kwargs.pop("content_types", [])
         self.max_upload_size = kwargs.pop("max_upload_size", 0)
@@ -24,7 +28,11 @@ class ValidatedFileField(models.FileField):
         if self.content_types:
             uploaded_content_type = getattr(file, 'content_type', '')
 
-            mg = magic.Magic(mime=True)
+            if sys.platform in ('win32', 'cygwin'):
+                mg = magic.Magic(
+                    mime=True, magic_file=settings.MAGIC_FILE)
+            else:
+                mg = magic.Magic(mime=True)
             content_type_magic = mg.from_buffer(
                 file.read(self.mime_lookup_length)
             )
@@ -36,14 +44,17 @@ class ValidatedFileField(models.FileField):
 
             if not uploaded_content_type in self.content_types:
                 raise forms.ValidationError(
-                    _('Files of type %(type)s are not supported.') % {'type': content_type_magic}
+                    _('Files of type %(type)s are not supported.') % {
+                        'type': content_type_magic}
                 )
 
         if self.max_upload_size and hasattr(file, '_size'):
             if file._size > self.max_upload_size:
                 raise forms.ValidationError(
                     _('Files of size greater than %(max_size)s are not allowed. Your file is %(current_size)s') %
-                    {'max_size': filesizeformat(self.max_upload_size), 'current_size': filesizeformat(file._size)}
+                    {'max_size': filesizeformat(
+                        self.max_upload_size),
+                     'current_size': filesizeformat(file._size)}
                 )
 
         return data
@@ -64,7 +75,7 @@ class FileQuota(object):
                     self.current_usage += the_file.size
                 except AttributeError:
                     pass  # Protect against the inconsistence of that the file
-                          # has been deleted in storage but still is in the field
+                    # has been deleted in storage but still is in the field
 
     def exceeds(self, size=0):
         if self.max_usage >= 0:
@@ -89,5 +100,5 @@ class QuotaValidator(object):
         if self.quota.exceeds(file_size):
             raise forms.ValidationError(
                 _('Please keep the total uploaded files under %(total_size)s. With this file, the total would be %(exceed_size)s.' %
-                {'total_size': filesizeformat(self.quota.max_usage), 'exceed_size': filesizeformat(self.quota.current_usage + file_size)})
+                  {'total_size': filesizeformat(self.quota.max_usage), 'exceed_size': filesizeformat(self.quota.current_usage + file_size)})
             )
