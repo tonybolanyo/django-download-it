@@ -19,6 +19,7 @@ before_script: cd src
 install:
   - pip install -r requirements/local.txt
   - pip install $DJANGO
+  - pip install coveralls
   
 # command to run tests
 script: pytest
