@@ -3,7 +3,7 @@ import magic
 import sys
 
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView, View
 from django.views.generic.detail import SingleObjectMixin
@@ -43,6 +43,13 @@ class DownloadDetailView(DetailView):
 
     model = Download
     context_object_name = 'file'
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset=queryset)
+        is_staff = self.request.user.is_staff
+        if obj.status != Download.STATUS.published and not is_staff:
+            raise Http404
+        return obj
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
