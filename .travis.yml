@@ -13,6 +13,8 @@ python:
 env:
   - DJANGO_SETTINGS_MODULE=abdownloads.settings.local
 
+before_script: cd src
+
 # command to install dependencies
 install: "pip install -r requirements/local.txt"
 # command to run tests
