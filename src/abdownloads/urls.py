@@ -20,7 +20,7 @@ from django.contrib import admin
 
 
 urlpatterns = [
-    url(r'^downloads/', include('downloads.urls', namespace='downloads')),
+    url(r'^downloads/', include('downloads.urls')),
     url(r'^admin/', admin.site.urls),
 ]
 
