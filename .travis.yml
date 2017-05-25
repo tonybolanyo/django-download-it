@@ -10,6 +10,9 @@ python:
   - "3.7-dev" # 3.7 development branch
   - "nightly" # currently points to 3.7-dev
 
+env:
+  - DJANGO_SETTINGS_MODULE=abdownloads.settings.local
+
 # command to install dependencies
 install: "pip install -r requirements/local.txt"
 # command to run tests
