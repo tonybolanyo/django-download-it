@@ -2,7 +2,6 @@
 
 coverage==4.4.1
 mixer==5.6.6
-pdbpp==0.8.3
 pytest==3.1.0
 pytest-cov==2.5.1
 pytest-django==3.1.2
