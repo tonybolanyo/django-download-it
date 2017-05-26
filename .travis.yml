@@ -1,28 +1,28 @@
 language: python
 python:
-  - "3.4"
-  - "3.5"
-  - "3.5-dev" # 3.5 development branch
-  - "3.6"
-  - "3.6-dev" # 3.6 development branch
-  - "3.7-dev" # 3.7 development branch
-  - "nightly" # currently points to 3.7-dev
-
+- '3.4'
+- '3.5'
+- 3.5-dev
+- '3.6'
+- 3.6-dev
+- 3.7-dev
+- nightly
 env:
+  matrix:
   - DJANGO_SETTINGS_MODULE=abdownloads.settings.local
   - DJANGO=Django==1.10
   - DJANGO=Django==1.11
   - DJANGO=Django
-
 before_script: cd src
-
-# command to install dependencies
 install:
-  - pip install -r requirements/local.txt
-  - pip install $DJANGO
-  - pip install coveralls
-  
-# command to run tests
+- pip install -r requirements/local.txt
+- pip install $DJANGO
+- pip install coveralls
 script: pytest
-
 after_success: coveralls
+notifications:
+  pushover:
+    api_key:
+      secure: l5B8lEdRivheWF/LAMoWzbs4raH4fEwfkpCkr+qXkmmDhR+lLM3CWakonu3PXJmxfyEP3oM+xidO0kk1biMxZF/Sz9xAtEBTJ/y/ddSN/k7sxL/NXSvmsfizZNv9q3PtMCcRNYbaeO2mo2zKLAM3qJ6FhOINJxWBpopfJtpnlnJhp8mfG0FtJi9F7kcXk+ApQmoBcy5Pstj7MSzGB4EhjQDgl3MvTLaN6bt1ZloPiVo6nhZb/GF3C9A81EutVsoDFz+c7RVjDEC9YYPfcqzMK/JMUQZNr2IYKM3eU8NwN71RQUbail2tvfYSB5cq7HbKKpyTJ8wPDw89sa9iuPdt1FbGd5Whffg+kLvbDNWZ01ndLJD82+ZFfmHqKY/JYYl8R1AawIZnHnNQ4vaI24vlY3Elwfl0ZewRbFrCShjIDMjxUJEBWYHaZEF7x2nwA0mLekRWo1uAvBjsLDCEFkm2uEF/nv4UYd00yRB+HAUYOC14zzkLpjkM9vv60SdBFsyRiUlqv7HPdUqza9NMKSFqDwyXpcjqPusMadQEmKeJMjuKZYl/OiibwaGwQsXvxy0Fr7Xe9HugCMafInXW9+tXAeWn8Dg9j/D4SwRSyve7GLOKK/5iQO7aeP3m2DzrrNOppRdERhgPTQhIuvPbKjMgZ5qmpC+3ThVjOOpfs//0L+E=
+    users:
+      secure: hWgOpwQrbCPTI74rZexLh9B06uA6DMU52gpYPdVqAeRJPB/ck+j9waMPEFa/vujEpcwge5iNSj+vaav7CiLirBTLvX8bvffFxNea+G14Ythmls993lVzClfmk68AWyGInB8m30HZRNEMfANw3yQWH7oVWXMlBNhv1YVhz5JG8LRflTHvSnIPOIOcJbnt54m9AXPfXwhbxO8OK3hMm7HJFTf/fCfxXSWyO4xxyQI8zvMYvBcFudD63h2KOVve/W13wjl5/BWWAMgxGsERX2JAJwxN0y9aLjShhfhKW+8t0u1BHX2rmkQ+spWfH6f+vI00Atq5aJ7SotLsdByuu+VJkyKHJJy3RxSSaliVBI4JBIitiZfMfNbc3RNhXq/+gOL0fxXstiA4/YCHPLrHdJEkYVYk4RF/2wPc6G1Olq3VCAmSscJ/y0tjhwlcL7cwHeQKZ8a3ObKRVNoTItrdNJ2e4/0IG2jklINEvXohHOLar1M0wD6Xg71qcH+awDx7reMQidYD3nAO+okh60VGAcW8JEAWIeeOPfMEgrO7Gh6kMgh2gQxU9nMdQ3/CzCHxkUEHiLqCL+Uzunj2A89QsGdnFoP0GRkOW3Y/Od/E5AaSXRPTo2Wy8FkUUK8XrzT09wriCKHZH06anjTn7aUyBPus6Jr1yiCao7MajssZ7GyzPXA=
