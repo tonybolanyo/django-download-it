@@ -12,6 +12,10 @@ from .models import Download
 
 logger = logging.getLogger(__name__)
 
+try:
+    MAGIC_FILE = settings.MAGIC_FILE
+except:
+    MAGIC_FILE = None
 
 class DownloadListView(ListView):
 
@@ -29,10 +33,7 @@ class FileDownloadView(SingleObjectMixin, View):
         logger.debug('Downloading %s' % obj.file)
         obj.downloads = obj.downloads + 1
         obj.save()
-        if sys.platform in ('win32', 'cygwin'):
-            file_magic = magic.Magic(mime=True, magic_file=settings.MAGIC_FILE)
-        else:
-            file_magic = magic.Magic(mime=True)
+        file_magic = magic.Magic(mime=True, magic_file=MAGIC_FILE)
         mime = file_magic.from_file(obj.file.path)
         response = HttpResponse(obj.file, content_type=mime)
         response['Content-Disposition'] = 'attachment; filename="%s"' % obj.file.name
@@ -54,9 +55,6 @@ class DownloadDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         obj = self.get_object()
-        if sys.platform in ('win32', 'cygwin'):
-            file_magic = magic.Magic(mime=True, magic_file=settings.MAGIC_FILE)
-        else:
-            file_magic = magic.Magic(mime=True)
+        file_magic = magic.Magic(mime=True, magic_file=MAGIC_FILE)
         context['mime'] = file_magic.from_file(obj.file.path)
         return context
