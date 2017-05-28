@@ -1,56 +1,60 @@
+from io import StringIO
 import os
 
+from django.conf import settings
 from django.test import TestCase
+
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from mixer.backend.django import mixer
 
-from .models import TestModel, ModelTestCase
+from .forms import TestModelForm
+from .models import ModelTestCase, TestModelFile
 from .utils import get_fake_pdf_file
 from ..fields import ValidatedFileField
 
 
-class ModelWithFile(TestModel):
+class ValidatedFileFieldTest(ModelTestCase):
 
-    """
-    Temporary model to test `ValidatedFileField`.
-    """
+    def test_create_empty_instance(self):
+        """Can create model instance"""
 
-    file = ValidatedFileField(
-        upload_to='downloads',
-        content_types=['application/pdf'],
-        max_upload_size=1048576,    # 1 Mb: 1024 * 1024
-        blank=True,
-        null=True,
-    )
+        instance = TestModelFile.objects.create()
 
-    small_file = ValidatedFileField(
-        upload_to='downloads',
-        content_types=['application/pdf'],
-        max_upload_size=100,    # 100 bytes
-        blank=True,
-        null=True,
-    )
+    def test_create_instance_with_file(self):
+        """Can create model instance with file and access file URL"""
 
-    text_file = ValidatedFileField(
-        upload_to='downloads',
-        content_types=['text/plain'],
-        max_upload_size=100,    # 100 bytes
-        )
+        instance = TestModelFile.objects.create(file=get_fake_pdf_file('foo'))
 
+        self._check_file_url(instance.file, 'foo')
 
-class TestValidatedFileField(ModelTestCase):
+        instance.file.delete()
+        instance.delete()
 
-    temporary_models = (ModelWithFile,)
+    def test_form_ok(self):
 
-    def setUp(self):
-        self.file = get_fake_pdf_file()
+        io = StringIO()
+        io.write('%PDF-1.5')
+        pdf_file = InMemoryUploadedFile(
+            file=io, field_name=None, name='foo.pdf',
+            content_type='application/pdf', size=2300, charset=None,
+            content_type_extra='application/pdf')
+        pdf_file.seek(0)
+        form = TestModelForm(data={}, files={'file': pdf_file})
 
-    def test_model_has_file(self):
-        obj = mixer.blend(ModelWithFile, file=self.file)
-        os.remove(obj.file.path)
-        assert obj.file is not None, 'Should save the file'
-        assert obj.file.name.endswith(self.file.name), 'Should have the filename'
+        self.assertTrue(form.is_valid())
+        instance = form.save()
 
-    def test_max_size(self):
-        obj = mixer.blend(ModelWithFile, small_file=self.file)
-        os.remove(obj.small_file.path)
+        self._check_file_url(instance.the_file, 'the_file.png')
+
+        instance.the_file.delete()
+        instance.delete()
+
+    def _check_file_url(self, filefield, filename):
+        """
+        Helper function to check URL of a FileField file.
+        """
+
+        url = os.path.join(settings.MEDIA_URL,
+                           filefield.field.upload_to, filename)
+        self.assertEqual(filefield.url, url)
