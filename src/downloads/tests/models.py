@@ -2,8 +2,6 @@ from django.core.management.color import no_style
 from django.db import connection, models
 from django.test import TestCase
 
-from ..fields import ValidatedFileField
-
 """
 How to test CustomField?
 The most common approach to this problem is simple, if annoying:
@@ -99,12 +97,10 @@ class TestModelFile(TestModel):
     Temporary model to test `ValidatedFileField`.
     """
 
-    file = ValidatedFileField(
+    file = models.FileField(
         null=True,
         blank=True,
-        upload_to='testfile',
-        content_types=['application/pdf'],
-        max_upload_size=10240)
+        upload_to='testfile')
 
 
 class TestModelNoValidate(models.Model):
@@ -113,34 +109,8 @@ class TestModelNoValidate(models.Model):
     Temporary model to test `ValidatedFileField`.
     """
 
-    file = ValidatedFileField(
+    file = models.FileField(
         null=True,
         blank=True,
         upload_to='testfile')
-
-
-class TestContainer(models.Model):
-
-    """
-    Temporary model to test `ValidatedFileField`.
-    """
-
-    name = models.CharField(max_length=100)
-
-
-class TestElement(models.Model):
-
-    """
-    Temporary model to test `ValidatedFileField`.
-    """
-
-    container = models.ForeignKey(
-        TestContainer,
-        related_name='test_elements')
-    file = ValidatedFileField(
-        null=True,
-        blank=True,
-        upload_to='testfile',
-        content_types=['image/png', 'image/jpeg'])
-
 

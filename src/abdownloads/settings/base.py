@@ -130,9 +130,33 @@ STATICFILES_DIRS = (
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
 MEDIA_URL = '/media/'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': True,
+        },
+        'downloads': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+            'propagate': True,
+        },
+    },
+}
+
 # For using python-magic on windows
 # as explained in https://github.com/pidydx/libmagicwin64
 # copy magic1.dll and libgnurx-0.dll into c:\windows\system32
 # copy magic.mgc on any accesible location
 # set executable path to magic.mgc
 # MAGIC_FILE = None
+
+DOWNLOADS_ALLOWED_CONTENT_TYPES = ['application/pdf']
