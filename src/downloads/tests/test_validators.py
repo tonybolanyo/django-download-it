@@ -9,9 +9,9 @@ from django.test import TestCase
 
 from mixer.backend.django import mixer
 
-from ..validators import FileMimeValidator
+from ..validators import FileMimeValidator, FileSizeValidator
 
-from .forms import ModelFormTest, MultipleMimeFormTest
+from .forms import ModelFormTest, MultipleMimeFormTest, ModelFormSizeTest
 from .models import (
     ModelTest, ModelTestFile, ModelTestMultipleMime, ModelTestCase)
 from .utils import get_fake_pdf_file
@@ -79,4 +79,36 @@ class TestFileMimeValidator(ModelTestCase):
         """Should accept real MIME, not http header MIME"""
         file = get_file('not_pdf.pdf')
         form = ModelFormTest(data={}, files={'file': file})
+        self.assertFalse(form.is_valid())
+
+
+class TestFileSizeValidator(ModelTestCase):
+
+    def test_size_equality(self):
+
+        self.assertEqual(
+            FileSizeValidator(),
+            FileSizeValidator()
+        )
+
+        self.assertEqual(
+            FileSizeValidator(max_size=500),
+            FileSizeValidator(max_size=500)
+        )
+
+        self.assertNotEqual(
+            FileSizeValidator(max_size=500),
+            FileSizeValidator(max_size=1000)
+        )
+
+    def test_valid_size(self):
+        """Accept file size < max_size"""
+        file = get_file('sample.pdf')
+        form = ModelFormSizeTest(data={}, files={'file': file})
+        self.assertTrue(form.is_valid())
+
+    def test_invalid_size(self):
+        """Reject file size > max_size"""
+        file = get_file('big_file.pdf')
+        form = ModelFormSizeTest(data={}, files={'file': file})
         self.assertFalse(form.is_valid())

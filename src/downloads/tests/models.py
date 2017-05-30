@@ -2,7 +2,7 @@ from django.core.management.color import no_style
 from django.db import connection, models
 from django.test import TestCase
 
-from ..validators import FileMimeValidator
+from ..validators import FileMimeValidator, FileSizeValidator
 
 """
 How to test CustomField?
@@ -122,3 +122,19 @@ class ModelTestMultipleMime(ModelTest):
                 ['application/pdf', 'application/vnd.oasis.opendocument.text'])
         ],
     )
+
+
+class ModelTestSizeFile(ModelTest):
+
+    """
+    Temporary model to test `ValidatedFileField`.
+    """
+
+    file = models.FileField(
+        upload_to='testfile',
+        blank=True,
+        null=True,
+        validators=[FileSizeValidator()],
+    )
+
+
