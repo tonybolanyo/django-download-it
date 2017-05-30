@@ -105,3 +105,20 @@ class ModelTestFile(ModelTest):
         null=True,
         validators=[FileMimeValidator()],
     )
+
+
+class ModelTestMultipleMime(ModelTest):
+
+    """
+    Temporary model to test multimple MIME acceptance
+    """
+
+    file = models.FileField(
+        upload_to='testfile',
+        blank=True,
+        null=True,
+        validators=[
+            FileMimeValidator(
+                ['application/pdf', 'application/vnd.oasis.opendocument.text'])
+        ],
+    )
