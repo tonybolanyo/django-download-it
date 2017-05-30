@@ -7,11 +7,11 @@ from mixer.backend.django import mixer
 
 from ..validators import FileMimeValidator
 
-from .models import TestModel, ModelTestCase
+from .models import ModelTest, ModelTestCase
 from .utils import get_fake_pdf_file
 
 
-class ModelFile(TestModel):
+class ModelFile(ModelTest):
 
     """
     Temporary model to test `ValidatedFileField`.

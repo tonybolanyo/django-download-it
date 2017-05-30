@@ -22,7 +22,7 @@ http://www.akshayshah.org/post/testing-django-fields/
 """
 
 
-class TestModel(models.Model):
+class ModelTest(models.Model):
 
     """
     By making all the test models inherit from this abstract model,
