@@ -1,3 +1,5 @@
+from .base import *
+
 # For using python-magic on windows
 # as explained in https://github.com/pidydx/libmagicwin64
 # copy magic1.dll and libgnurx-0.dll into c:\windows\system32
