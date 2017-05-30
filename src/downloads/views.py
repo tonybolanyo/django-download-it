@@ -12,10 +12,9 @@ from .models import Download
 
 logger = logging.getLogger(__name__)
 
-try:
-    MAGIC_FILE = settings.MAGIC_FILE
-except:
-    MAGIC_FILE = None
+MAGIC_FILE = None if not hasattr(
+    settings, 'MAGIC_FILE') else settings.MAGIC_FILE
+
 
 class DownloadListView(ListView):
 
