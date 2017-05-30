@@ -134,7 +134,7 @@ class ModelTestSizeFile(ModelTest):
         upload_to='testfile',
         blank=True,
         null=True,
-        validators=[FileSizeValidator()],
+        validators=[FileSizeValidator(25000)],  # max size 25000 bytes
     )
 
 

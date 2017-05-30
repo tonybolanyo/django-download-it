@@ -7,6 +7,7 @@ from model_utils import Choices
 from model_utils.models import StatusModel, TimeStampedModel
 
 from .utils import FileSize
+from .validators import FileMimeValidator, FileSizeValidator
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,7 @@ class Download(StatusModel, TimeStampedModel):
     file = models.FileField(
         _('file'),
         upload_to='downloads',
+        validators=[FileMimeValidator(), FileSizeValidator()]
     )
     thumbnail = models.ImageField(_('thumbnail'), upload_to='downloads')
     downloads = models.IntegerField(_('download counter'), default=0)

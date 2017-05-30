@@ -10,6 +10,9 @@ from django.utils.translation import ugettext_lazy as _
 
 import magic
 
+from .utils import FileSize
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -19,6 +22,9 @@ MAGIC_FILE = None if not hasattr(
 ALLOWED_TYPES = ['application/pdf'] if not hasattr(
     settings, 'DOWNLOADS_ALLOWED_CONTENT_TYPES'
 ) else settings.DOWNLOADS_ALLOWED_CONTENT_TYPES
+
+MAX_FILE_SIZE = FileSize('5MB').get_bytes() if not hasattr(
+    settings, 'DOWNLOADS_MAX_FILE_SIZE') else settings.DOWNLOADS_MAX_FILE_SIZE
 
 
 @deconstructible
@@ -69,7 +75,7 @@ class FileMimeValidator(object):
 @deconstructible
 class FileSizeValidator:
 
-    def __init__(self, max_size=25000):
+    def __init__(self, max_size=MAX_FILE_SIZE):
         self.max_size = max_size
 
     def __eq__(self, other):
