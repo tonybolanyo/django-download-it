@@ -9,15 +9,14 @@ from mixer.backend.django import mixer
 
 from ..validators import FileMimeValidator
 
+from .forms import ModelFormTest
 from .models import ModelTest, ModelTestFile, ModelTestCase
 from .utils import get_fake_pdf_file
 
 
 def get_fake_file(filename='foo.pdf', mime_type='application/pdf'):
     """
-    Creafe a fake PDF file for tests.
-    Use StringIO writing `%PDF-1.5` at the begining of file,
-    so `magic` get the mime as `application/pdf`.
+    Creafe a fake file for tests.
     """
 
     io = StringIO()
@@ -58,11 +57,5 @@ class TestFileMimeValidator(ModelTestCase):
         )
 
     def test_invalid_file(self):
-        obj = mixer.blend(ModelTestFile)
-        file = get_fake_file(
-            filename='file.bin', mime_type='application/octet-stream')
-        print('********************************')
-        print(file.content_type)
-        print('********************************')
-        obj.file = file
-        obj.save()
+        form = ModelFormTest(data={}, files={'file':get_fake_file()})
+        self.assertFalse(form.is_valid())
