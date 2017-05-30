@@ -2,6 +2,8 @@ from django.core.management.color import no_style
 from django.db import connection, models
 from django.test import TestCase
 
+from ..validators import FileMimeValidator
+
 """
 How to test CustomField?
 The most common approach to this problem is simple, if annoying:
@@ -89,3 +91,17 @@ class ModelTestCase(TestCase):
                 getattr(m, method_name)()
             except AttributeError:
                 raise TypeError("%s doesn't support table mgmt." % m)
+
+
+class ModelTestFile(ModelTest):
+
+    """
+    Temporary model to test `ValidatedFileField`.
+    """
+
+    file = models.FileField(
+        upload_to='testfile',
+        blank=True,
+        null=True,
+        validators=[FileMimeValidator()],
+    )
