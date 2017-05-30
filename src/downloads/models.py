@@ -7,7 +7,7 @@ from model_utils import Choices
 from model_utils.models import StatusModel, TimeStampedModel
 
 from .utils import FileSize
-from .validators import validate_file_extension
+from .validators import FileMimeValidator
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +27,7 @@ class Download(StatusModel, TimeStampedModel):
     file = models.FileField(
         _('file'),
         upload_to='downloads',
-        help_text=_('Only PDF and ZIP files.'),
-        validators=[validate_file_extension])
+        validators=[FileMimeValidator()])
     thumbnail = models.ImageField(_('thumbnail'), upload_to='downloads')
     downloads = models.IntegerField(_('download counter'), default=0)
     registered_only = models.BooleanField(

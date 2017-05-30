@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('slug', models.SlugField(unique=True, verbose_name='slug')),
                 ('summary', models.TextField(blank=True, verbose_name='summary')),
                 ('description', models.TextField(blank=True, verbose_name='description')),
-                ('file', models.FileField(help_text='Only PDF and ZIP files.', upload_to='downloads', validators=[downloads.validators.validate_file_extension], verbose_name='file')),
+                ('file', models.FileField(help_text='Only PDF and ZIP files.', upload_to='downloads', verbose_name='file')),
                 ('thumbnail', models.ImageField(upload_to='downloads', verbose_name='thumbnail')),
                 ('downloads', models.IntegerField(default=0, verbose_name='download counter')),
                 ('registered_only', models.BooleanField(default=True, verbose_name='only for registered users')),
