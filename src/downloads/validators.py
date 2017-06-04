@@ -68,6 +68,9 @@ class FileMimeValidator(object):
 
 @deconstructible
 class FileSizeValidator:
+    """
+    Allows validate size in a `FileField`.
+    """
 
     def __init__(self, max_size=MAX_FILE_SIZE):
         self.max_size = max_size
