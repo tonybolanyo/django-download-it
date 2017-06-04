@@ -41,13 +41,7 @@ class FileMimeValidator(object):
 
     def __call__(self, value):
 
-        if value.file.__class__ == InMemoryUploadedFile:
-            buffer = value.file.file.getvalue()
-            # as the file is already in memory, buffer length
-            # should not exhaust the system
-        else:
-            buffer = value.file.file.read(self.mime_lookup_length)
-            # but here this may become an issue
+        buffer = value.file.file.read(self.mime_lookup_length)
 
         logger.debug('Magic file: %s' % MAGIC_FILE)
 
